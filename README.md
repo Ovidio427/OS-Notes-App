@@ -2,7 +2,7 @@
 
 A modern, responsive note-taking application built with Next.js and Firebase. Easily create, edit, organize, and manage your notes in one place. The application provides a simple and intuitive interface for keeping track of your thoughts, ideas, and important information.
 
-[🌐 View Live Site]()
+[🌐 View Live Site](https://osmnotez.netlify.app/)
 
 # ✨ Features
 
