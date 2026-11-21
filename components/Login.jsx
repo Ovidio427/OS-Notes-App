@@ -3,6 +3,8 @@
 import { useAuth } from "@/context/AuthContext"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
+import { sendPasswordResetEmail } from "firebase/auth"
+import { auth } from "@/firebase"
 
 export default function Login() {
     const [email, setEmail] = useState('')
@@ -24,21 +26,38 @@ export default function Login() {
 
         try {
             if (isRegister) {
-                // then we need to register a user
+                
                 await signup(email, password)
             } else {
-                // otherwise they're wanting to login
+                
                 await login(email, password)
             }
-            // so if we get here with no error, then we've authenticated, so push to notes page
+            
             router.push('/notes')
         } catch (err) {
             console.log(err.message)
-            // challenge for you - add an error state that is conditionally rendered if there is an error and shows the error message
+            
         } finally {
             setIsAuthenticating(false)
         }
     }
+
+    async function handleForgotPassword() {
+        if (!email.includes('@')) {
+            alert('Please enter your email address first.')
+            return
+        }
+
+        try {
+            await sendPasswordResetEmail(auth, email.trim())
+
+            alert('Password reset email sent! Check your inbox.')
+        } catch (err) {
+            console.error(err)
+            alert('Unable to send password reset email. Please try again.')
+        }
+    }
+
 
     return (
         <>
@@ -69,9 +88,14 @@ export default function Login() {
                     }} className="card-button-secondary">
                         <small>{isRegister ? 'Log in' : 'Sign up'}</small>
                     </button>
-                    <button className="card-button-secondary">
-                        <small>Forgot password?</small>
-                    </button>
+                    {!isRegister && (
+                        <button
+                            onClick={handleForgotPassword}
+                            className="card-button-secondary"
+                        >
+                            <small>Forgot password?</small>
+                        </button>
+                    )}
                 </div>
                 <div className="full-line"></div>
                 <footer>

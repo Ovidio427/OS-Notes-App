@@ -2,7 +2,7 @@ import Markdown from "markdown-to-jsx";
 import TopNav from "./TopNav";
 
 export default function MDX(props) {
-    const { text } = props // gives us access to the text attribute (or the value assigned to it really)
+    const { text } = props 
     const md = `# this is a header 1
 ## this is a header 2
 
