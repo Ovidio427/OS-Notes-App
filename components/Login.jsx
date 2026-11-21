@@ -11,6 +11,7 @@ export default function Login() {
     const [password, setPassword] = useState('')
     const [isRegister, setIsRegister] = useState(false)
     const [isAuthenticating, setIsAuthenticating] = useState(false)
+    const [authError, setAuthError] = useState('')
 
     const { login, signup } = useAuth()
     const router = useRouter()
@@ -18,29 +19,30 @@ export default function Login() {
     const cantAuth = !email.includes('@') || password.length < 6
 
     async function handleAuthUser() {
-        // check if email is legit and password is acceptable
-        if (cantAuth) {
-            return
-        }
-        setIsAuthenticating(true)
-
-        try {
-            if (isRegister) {
-                
-                await signup(email, password)
-            } else {
-                
-                await login(email, password)
-            }
-            
-            router.push('/notes')
-        } catch (err) {
-            console.log(err.message)
-            
-        } finally {
-            setIsAuthenticating(false)
-        }
+    if (cantAuth) {
+        return
     }
+
+    setIsAuthenticating(true)
+    setAuthError('')
+
+    try {
+        if (isRegister) {
+            await signup(email, password)
+        } else {
+            await login(email, password)
+        }
+
+        router.push('/notes')
+
+    } catch (err) {
+        console.error('Login error:', err)
+        setAuthError(err.message)
+
+    } finally {
+        setIsAuthenticating(false)
+    }
+}
 
     async function handleForgotPassword() {
         if (!email.includes('@')) {
@@ -82,6 +84,7 @@ export default function Login() {
                 <button onClick={handleAuthUser} disabled={cantAuth || isAuthenticating} className="submit-btn">
                     <h6>{isAuthenticating ? 'Submitting...' : 'Submit'}</h6>
                 </button>
+                {authError && ( <p style={{ color: 'red' }}>{authError}</p> )}
                 <div className="secondary-btns-container">
                     <button onClick={() => {
                         setIsRegister(!isRegister)

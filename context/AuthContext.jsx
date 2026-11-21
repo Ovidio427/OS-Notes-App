@@ -31,29 +31,16 @@ export default function AuthProvider(props) {
     // resetpasswordemail
     // sendPasswordResetEmail(auth, email)
 
-    useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, async (user) => {
-            console.log('Authenticating user...')
-            setIsLoadingUser(true)
-            try {
-                setCurrentUser(user)
+   useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+        console.log('Authentication state changed:', user)
 
-                if (!user) {
-                    // guard clause which just means that if there is no user then the code stops here and we don't do any data fetching or anything
-                    throw Error('No user found')
-                }
-                console.log('Found user')
+        setCurrentUser(user)
+        setIsLoadingUser(false)
+    })
 
-                // if we find a user, then fetch their data
-            } catch (err) {
-                console.log(err.message)
-            } finally {
-                setIsLoadingUser(false)
-            }
-        })
-
-        return unsubscribe
-    }, [])
+    return unsubscribe
+}, [])
 
     const value = {
         currentUser,
